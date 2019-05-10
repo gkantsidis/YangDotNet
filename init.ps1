@@ -105,3 +105,15 @@ function global:qb {
 }
 
 Import-Module $PSScriptRoot\src\YangDevHelper
+
+$userPath = Join-Path -Path $PSScriptRoot -ChildPath users | Join-Path -ChildPath $Env:USERNAME
+$userInit = Join-Path -Path $userPath -ChildPath "init.ps1"
+$userLocal = Join-Path -Path $userPath -ChildPath "init-local.ps1"
+if (Test-Path -Path $userPath -PathType Leaf) {
+    Write-Verbose -Message "Running user's profile from $userPath"
+    . $userInit
+}
+if (Test-Path -Path $userLocal -PathType Leaf) {
+    Write-Verbose -Message "Running user's local profile from $userPath"
+    . $userLocal
+}
