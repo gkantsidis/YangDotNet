@@ -29,6 +29,9 @@ module Arguments =
     // Below we define a custom date field. We could have used the system DateTime,
     // but that gives more information (time) that specified by the grammar.
 
+    let [<Literal>] private date_pattern = "(?<Year>[1-2][0-9]{3})\-(?<Month>(0[1-9]|1[0-2]))\-(?<Day>([0-2][0-9]|3[0-1]))"
+    let private date_re = Text.RegularExpressions.Regex(date_pattern, Text.RegularExpressions.RegexOptions.Compiled)
+
     /// Represents a date (date-arg in YANG).
     [<StructuredFormatDisplay("{Value}")>]
     [<CustomEquality; CustomComparison>]
@@ -53,6 +56,16 @@ module Arguments =
             }
 
         static member Make(year : int, month : int, day : int) = Date.Make (uint16 year, uint8 month, uint8 day)
+
+        static member Make(date : string) =
+            if date_re.IsMatch(date) then
+                let result = date_re.Match(date)
+                let year = result.Groups.Item("Year").Value |> Int32.Parse
+                let month = result.Groups.Item("Month").Value |> Int32.Parse
+                let day = result.Groups.Item("Day").Value |> Int32.Parse
+                let date = Date.Make(year, month, day)
+                date
+            else invalidArg "date" "input is not a valid date string"
 
         member this.Value = sprintf "%04d-%02d-%02d" this.Year this.Month this.Day
         override this.ToString() = this.Value
