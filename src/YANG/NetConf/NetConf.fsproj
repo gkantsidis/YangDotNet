@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Client.fs" />
+    <Compile Include="Capability.fs" />
     <None Include="playground.fsx" />
     <Content Include="packages.config" />
   </ItemGroup>
@@ -61,6 +62,13 @@
     <Reference Include="System.ValueTuple">
       <Private>True</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Model\Model.fsproj">
+      <Name>Model</Name>
+      <Project>{7ef9ecd7-2db7-482d-9cfe-cf705b6b31c2}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
