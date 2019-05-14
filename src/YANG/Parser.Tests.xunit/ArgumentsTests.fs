@@ -69,6 +69,7 @@ module ArgumentsTests =
         let value = boundary.AsInteger
         Assert.True(value.IsSome)
         Assert.Equal(-15L, value.Value)
+
     [<Fact>]
     let ``parse range of decimal number value`` () =
         let input = "3.14"

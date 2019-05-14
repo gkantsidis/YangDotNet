@@ -36,6 +36,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "XmlHelper.Tests.xunit", "Xm
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "NetConf", "NetConf\NetConf.fsproj", "{A28CA60A-230F-4118-9C20-3100445D2C2A}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "NetConf.Tests.xunit", "NetConf.Tests.xunit\NetConf.Tests.xunit.fsproj", "{694B15F4-6B7E-412A-BBA6-BA77AD8AA63B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,10 @@ Global
 		{A28CA60A-230F-4118-9C20-3100445D2C2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A28CA60A-230F-4118-9C20-3100445D2C2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A28CA60A-230F-4118-9C20-3100445D2C2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{694B15F4-6B7E-412A-BBA6-BA77AD8AA63B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{694B15F4-6B7E-412A-BBA6-BA77AD8AA63B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{694B15F4-6B7E-412A-BBA6-BA77AD8AA63B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{694B15F4-6B7E-412A-BBA6-BA77AD8AA63B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
