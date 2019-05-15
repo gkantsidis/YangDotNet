@@ -3,7 +3,6 @@ generate_load_scripts: true
 source https://nuget.org/api/v2
 license_download: true
 
-nuget SSH.NET
 nuget System.Collections.Immutable
 nuget FSharp.Core 4.5.0
 nuget FSharp.Data

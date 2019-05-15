@@ -38,6 +38,10 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "NetConf", "NetConf\NetConf.
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "NetConf.Tests.xunit", "NetConf.Tests.xunit\NetConf.Tests.xunit.fsproj", "{694B15F4-6B7E-412A-BBA6-BA77AD8AA63B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{58B89A3E-AF1A-409F-8BEF-A7319700E08A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Renci.SshNet", "External\Renci.SshNet\Renci.SshNet.csproj", "{07603A69-8398-469C-B76C-B5BF6B42659C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,12 +100,17 @@ Global
 		{694B15F4-6B7E-412A-BBA6-BA77AD8AA63B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{694B15F4-6B7E-412A-BBA6-BA77AD8AA63B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{694B15F4-6B7E-412A-BBA6-BA77AD8AA63B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07603A69-8398-469C-B76C-B5BF6B42659C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07603A69-8398-469C-B76C-B5BF6B42659C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07603A69-8398-469C-B76C-B5BF6B42659C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07603A69-8398-469C-B76C-B5BF6B42659C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{593B96D9-1C12-4EBB-80F5-3D50ACAA40B3} = {77A6A766-2DE3-4494-A78A-5143C45B7A5C}
+		{07603A69-8398-469C-B76C-B5BF6B42659C} = {58B89A3E-AF1A-409F-8BEF-A7319700E08A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CE0415DE-6021-4B20-BFED-2BC32AA9635E}

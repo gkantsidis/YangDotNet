@@ -2,9 +2,9 @@
 // See the 'F# Tutorial' project for more help.
 
 #I @"../../../.paket/load/net471"
-#load "SSH.NET.fsx"
 
 #r @"../Model/bin/Debug/Yang.Model.dll"
+#r @"../External/Renci.SshNet/bin/Debug/Renci.SshNet.dll"
 
 #load "Client.fs"
 #load "Capability.fs"
