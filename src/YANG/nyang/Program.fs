@@ -31,6 +31,14 @@ let validate arguments =
             Environment.Exit(-1)
             ()
 
+let download_config arguments =
+    raise (new NotImplementedException())
+
+let private ieq (str1:string) (str2:string) =
+    if Object.ReferenceEquals(str1, str2) then true
+    elif Object.ReferenceEquals(null, str1) || Object.ReferenceEquals(null, str2) then false
+    else str1.Equals(str2, StringComparison.InvariantCultureIgnoreCase)
+
 [<EntryPoint>]
 let main argv =
     Parser.Initialize()
@@ -49,8 +57,10 @@ let main argv =
 
         else file, (Array.toList argv)
 
-    if operation.Equals("validate", StringComparison.InvariantCultureIgnoreCase) then
+    if ieq operation "validate" then
         validate args
+    elif ieq operation "getconfig" then
+        download_config args
     else
         Printf.eprintfn "Unknown operation: %s" operation
         fail_with_help ()

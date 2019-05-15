@@ -57,36 +57,68 @@ let password = Environment.GetEnvironmentVariable("NETCONF_TEST_PASSWORD")
 
 let client = new NetConfClient(machine, port, user, password)
 
-StoreKey client
+open System.IO
+open System.Text
+open System.Xml
 
 let ConnectAsync (client : NetConfClient) = async { client.Connect() }
 
-Async.RunSynchronously(ConnectAsync client)
-assert(client.IsConnected)
+type Configuration =
+    static member GetCommand (?configuration_store: string, ?message_id: int) =
+        let configuration_store = defaultArg configuration_store "running"
+        let message_id = defaultArg message_id 1
 
-let rpc = new Xml.XmlDocument()
-let element = rpc.CreateElement("rpc", namespaceURI="urn:ietf:params:xml:ns:netconf:base:1.0")
-let message_id = rpc.CreateAttribute("message-id")
-message_id.Value <- "1"
-element.Attributes.Append(message_id)
-let request = rpc.AppendChild(element)
-let item = request.AppendChild(rpc.CreateElement("get-config"))
-let source = item.AppendChild(rpc.CreateElement("source"))
-let running = source.AppendChild(rpc.CreateElement("running"))
-request.OuterXml
+        let rpc = new XmlDocument()
+        let element = rpc.CreateElement("rpc", "urn:ietf:params:xml:ns:netconf:base:1.0")
+        let messageId = rpc.CreateAttribute("message-id")
+        // This value will get replaced
+        messageId.Value <- message_id.ToString()
+        element.Attributes.Append(messageId) |> ignore
 
-client.OperationTimeout
+        let request = rpc.AppendChild(element);
+        let item = request.AppendChild(rpc.CreateElement("get-config"));
+        let source = item.AppendChild(rpc.CreateElement("source"));
+        source.AppendChild(rpc.CreateElement(configuration_store)) |> ignore
+        rpc
 
-try
-    let _response = client.SendReceiveRpc(rpc)
-    printfn "%A" _response
-with
-| :? Renci.SshNet.Common.SshConnectionException as e ->
-    printfn "%A" e
-    printfn "Inner: %A" e.InnerException
-    printfn "Data: %A" e.Data
-    printfn "Source: %A" e.Source
-    printfn "Trace: %A" e.StackTrace
+    static member DownloadAsync (client: NetConfClient, ?configuration_store: string) =
+        let configuration_store = defaultArg configuration_store "running"
+        let request = Configuration.GetCommand (configuration_store)
+
+        async {
+            if client.IsConnected = false then
+                do! ConnectAsync client
+            assert(client.IsConnected)
+            let response = client.SendReceiveRpc(request)
+            return response
+        }
+
+    static member Download (client: NetConfClient, ?configuration_store: string) =
+        let configuration_store = defaultArg configuration_store "running"
+        Async.RunSynchronously (Configuration.DownloadAsync (client, configuration_store))
+
+    static member DownloadAsStringAsync (client: NetConfClient, ?configuration_store: string) =
+        let configuration_store = defaultArg configuration_store "running"
+        async {
+            let! configuration = Configuration.DownloadAsync (client, configuration_store)
+            use mStream = new MemoryStream()
+            use writer = new XmlTextWriter(mStream, Encoding.Unicode)
+            writer.Formatting <- Formatting.Indented
+            configuration.WriteContentTo(writer)
+            writer.Flush()
+            do! (mStream.FlushAsync() |> Async.AwaitTask)
+            mStream.Position <- 0L
+            use reader = new StreamReader(mStream)
+            let formatted = reader.ReadToEnd()
+            return formatted
+        }
+
+    static member DownloadAsString (client: NetConfClient, ?configuration_store: string) =
+        let configuration_store = defaultArg configuration_store "running"
+        Async.RunSynchronously (Configuration.DownloadAsStringAsync (client, configuration_store))
+
+let configuration = Configuration.DownloadAsString client
+
 
 client.ConnectionInfo
 client.HostKeyReceived.Subscribe(fun v -> printfn "Name: %s, fingerprint: %A, Key: %A" v.HostKeyName v.FingerPrint v.HostKey)
@@ -109,3 +141,28 @@ cc |> List.map (fun cap -> cap.Name.OriginalString, cap.NetConfCapabilityName) |
 cc |> List.choose (Capability.StandardCapabilitity.TryMake)
 
 client.Dispose()
+
+
+let GetSchemaCommand (urn : string, name : string) =
+    let rpc = new XmlDocument()
+    let element = rpc.CreateElement("rpc", "urn:ietf:params:xml:ns:netconf:base:1.0")
+    let messageId = rpc.CreateAttribute("message-id")
+    // This value will get replaced
+    messageId.Value <- "1"
+    element.Attributes.Append(messageId) |> ignore
+
+    let request = rpc.AppendChild(element);
+    let item = request.AppendChild(rpc.CreateElement("get-schema"));
+    let schema = rpc.CreateAttribute("xmlns")
+    schema.Value <- urn
+    item.Attributes.Append(schema) |> ignore
+    let identifier = item.AppendChild(rpc.CreateElement("identifier"))
+    identifier.InnerText <- name
+    rpc
+
+let rpc = GetSchemaCommand ("urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring", "tailf-aaa")
+rpc.InnerXml
+
+if client.IsConnected = false then Async.RunSynchronously (ConnectAsync client)
+let response = client.SendReceiveRpc(rpc)
+response.InnerText

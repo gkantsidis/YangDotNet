@@ -64,3 +64,15 @@ $toDownload | ForEach-Object -Process {
 }
 
 Pop-Location
+
+# Some extra models
+if (-not (Test-Path "onos" -PathType Container)) {
+    New-Item -Path onos -ItemType Directory
+    Push-Location -Path onos
+    git init
+    git config core.sparseCheckout true
+    git remote add -f origin https://github.com/opennetworkinglab/onos.git
+    "/models" | Out-File -FilePath ".git/info/sparse-checkout" -Encoding ascii
+    git checkout master
+    Pop-Location
+}
